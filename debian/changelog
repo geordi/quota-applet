@@ -1,0 +1,8 @@
+quota-applet (1.0.0-1ubuntu1) UNRELEASED; urgency=medium
+
+  [ Jan Gaura ]
+  * Initial commit
+  * Initial commit
+  * Create README.md
+
+ -- nobody <nobody>  Thu, 25 Oct 2018 00:04:03 +0200
