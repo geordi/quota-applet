@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Quota
+Comment=Quota super display
+Exec=/usr/bin/qapplet_threading.py
+Terminal=false
+Type=Application
+NoDisplay=true

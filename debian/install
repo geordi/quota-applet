@@ -1,0 +1,2 @@
+qapplet.desktop /etc/xdg/autostart/
+qapplet_threading.py /usr/bin/
