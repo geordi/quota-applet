@@ -78,7 +78,7 @@ def draw_pie(percent, filename='pie.png'):
     N = 4
     
     if percent < 0.85:
-        color = 'black'
+        color = 'green'
     else:
         color = 'red'
 
