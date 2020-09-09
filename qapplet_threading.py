@@ -157,14 +157,14 @@ class Indicator():
     def create_menu(self):
         menu = Gtk.Menu()
         # menu item 1
-        item_1 = Gtk.MenuItem('Show disk usage')
+        item_1 = Gtk.MenuItem(label='Show disk usage')
         item_1.connect('activate', self.about)
         menu.append(item_1)
         # separator
         menu_sep = Gtk.SeparatorMenuItem()
         menu.append(menu_sep)
         # quit
-        item_quit = Gtk.MenuItem('Quit')
+        item_quit = Gtk.MenuItem(label='Quit')
         item_quit.connect('activate', self.stop)
         menu.append(item_quit)
 
@@ -229,9 +229,6 @@ def main():
     username = get_user()
 
     Indicator(username)
-    # this is where we call GObject.threads_init()
-    GObject.threads_init()
-    signal.signal(signal.SIGINT, signal.SIG_DFL)
     Gtk.main()
 
 
