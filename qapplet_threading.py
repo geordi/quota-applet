@@ -5,7 +5,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
 
-from gi.repository import Gtk, AppIndicator3, GObject
+from gi.repository import Gtk, AppIndicator3, GObject, GLib
 
 import os
 import sys
@@ -169,22 +169,13 @@ class Indicator():
             
             icon_filename = get_icon_filename(percent)
             
-            # apply the interface update using  GObject.idle_add()
-            
-            #GObject.idle_add(
-            #    self.indicator.set_icon,
-            #    self.iconpath,
-            #    priority=GObject.PRIORITY_DEFAULT
-            #    )
-            #self.indicator.set_icon_full(self.iconpath, 'ici')
-            
-            self.indicator.set_icon(icon_filename)
+            self.indicator.set_icon_full(icon_filename, f"{percent}%")
 
-            GObject.idle_add(
+            GLib.idle_add(
                 self.indicator.set_label,
                 mention, self.app,
-                priority=GObject.PRIORITY_DEFAULT
-                )
+                priority=GLib.PRIORITY_DEFAULT
+            )
 
 
     def stop(self, source):
@@ -202,13 +193,10 @@ def gen_pies():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--check-interval', help='How often check the used disk space', default=15, type=int)
-
     args = parser.parse_args()
 
     gen_pies()
     
-    os.environ['XAUTHORITY'] = os.path.join(Path.home(), '.Xauthority')
-
     Indicator(USER, **vars(args))
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     Gtk.main()
