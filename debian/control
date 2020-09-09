@@ -1,7 +1,7 @@
-Source: quota-applet
-Maintainer: nobody
+Maintainer: Daniel Trnka <daniel.trnka@gmail.com>
 Build-Depends: debhelper (>= 10)
 Section: x11
+Standards-Version: 4.5.0
 
 Package: quota-applet
 Architecture: all
@@ -9,3 +9,4 @@ Priority: extra
 Homepage: https://github.com/geordi/quota-applet
 Depends: python3(>=3.6.0), python3-pil(>=5.0.0), python3-gi(>=3.26.0), gir1.2-appindicator3-0.1
 Description: Quota super display
+ Quota super display applet

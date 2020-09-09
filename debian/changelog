@@ -1,3 +1,18 @@
+quota-applet (1.1.0) UNRELEASED; urgency=medium
+
+  * Fixed another deprecated issues
+  * install sigint handler so no exception is thrown on ctrl+c
+  * Green color for disk usage under the threshold
+  * check_interval is configurable from cli parameter
+  * Check_interval reduced to 15s
+  * Added dependency
+  * Simplified getting homedir and username
+  * Fixed deprecated issues
+  * Open baobab to examine disk usage
+  * Raise exception if quota parsing failed instead of silent exit.
+
+ -- Daniel Trnka <daniel.trnka@gmail.com>  Wed, 09 Sep 2020 18:52:49 +0000
+
 quota-applet (1.0.0-1ubuntu1) UNRELEASED; urgency=medium
 
   [ Jan Gaura ]
@@ -5,4 +20,4 @@ quota-applet (1.0.0-1ubuntu1) UNRELEASED; urgency=medium
   * Initial commit
   * Create README.md
 
- -- nobody <nobody>  Thu, 25 Oct 2018 00:04:03 +0200
+ -- Daniel Trnka <daniel.trnka@gmail.com>  Thu, 25 Oct 2018 00:04:03 +0200
