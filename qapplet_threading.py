@@ -11,6 +11,7 @@ import os
 import sys
 import time
 import subprocess
+import pwd
 from pathlib import Path
 from threading import Thread
 from PIL import Image, ImageDraw
@@ -26,33 +27,8 @@ def text_to_list(who_str):
             line = ''
     return output
 
-
-def get_user():
-    po = os.popen('who', 'r')
-    who_str = po.read()
-    #print who_str
-    who_list = text_to_list(who_str)
-    who_list = [ line for line in who_list if not line.startswith('root') ]
-
-    return who_list[0].split(' ')[0].strip().rstrip()
-
-
-WDIR = '/tmp/qapplet_{}/'.format(get_user())
-
-
-def get_home_dir(login):
-    home_dir = os.path.expanduser('~' + login)
-    #print("Home dir:", home_dir)
-    return home_dir
-
-
-def init_environ():
-    login = get_user()
-    #print('User:', login)
-    home_dir = get_home_dir(login)
-    os.environ['XAUTHORITY'] = home_dir + '/.Xauthority'
-    #print('XAUTH:', os.environ['XAUTHORITY'])
-
+USER = pwd.getpwuid(os.getuid()).pw_name
+WDIR = '/tmp/qapplet_{}/'.format(USER)
 
 def get_quota_for_user(username):
     po = os.popen('quota ' + username, 'r')
@@ -224,11 +200,9 @@ def gen_pies():
 def main():
     gen_pies()
     
-    init_environ()
+    os.environ['XAUTHORITY'] = os.path.join(Path.home(), '.Xauthority')
 
-    username = get_user()
-
-    Indicator(username)
+    Indicator(USER)
     Gtk.main()
 
 
