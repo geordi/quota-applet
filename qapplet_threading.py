@@ -12,11 +12,10 @@ import sys
 import time
 import subprocess
 import pwd
+import argparse
 from pathlib import Path
 from threading import Thread
 from PIL import Image, ImageDraw
-
-CHECK_INTERVAL = 15
 
 
 def text_to_list(who_str):
@@ -104,8 +103,9 @@ def get_icon_filename(percent):
 
 class Indicator():
 
-    def __init__(self, username):
+    def __init__(self, username, check_interval):
         self.username = username
+        self.check_interval = check_interval
         
         blocks, user_quota = get_quota_for_user(self.username)
         
@@ -152,7 +152,7 @@ class Indicator():
 
     def show_quota(self):
         while True:
-            time.sleep(CHECK_INTERVAL)
+            time.sleep(self.check_interval)
     
             blocks, user_quota = get_quota_for_user(self.username)
 
@@ -200,11 +200,16 @@ def gen_pies():
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--check-interval', help='How often check the used disk space', default=15, type=int)
+
+    args = parser.parse_args()
+
     gen_pies()
     
     os.environ['XAUTHORITY'] = os.path.join(Path.home(), '.Xauthority')
 
-    Indicator(USER)
+    Indicator(USER, **vars(args))
     Gtk.main()
 
 
