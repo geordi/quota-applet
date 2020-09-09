@@ -10,6 +10,8 @@ from gi.repository import Gtk, AppIndicator3, GObject
 import os
 import sys
 import time
+import subprocess
+from pathlib import Path
 from threading import Thread
 from PIL import Image, ImageDraw
 
@@ -149,14 +151,13 @@ class Indicator():
 
 
     def about(self, source):
-        #self.indicator.set_icon('/home/fei/gau01/qapplet/pie.png')
-        pass
-        
+        subprocess.Popen(["baobab", Path.home()])
+
 
     def create_menu(self):
         menu = Gtk.Menu()
         # menu item 1
-        item_1 = Gtk.MenuItem('G')
+        item_1 = Gtk.MenuItem('Show disk usage')
         item_1.connect('activate', self.about)
         menu.append(item_1)
         # separator
