@@ -210,6 +210,7 @@ def main():
     os.environ['XAUTHORITY'] = os.path.join(Path.home(), '.Xauthority')
 
     Indicator(USER, **vars(args))
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
     Gtk.main()
 
 
