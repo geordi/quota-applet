@@ -1,3 +1,4 @@
+Source: quota-applet
 Maintainer: Daniel Trnka <daniel.trnka@gmail.com>
 Build-Depends: debhelper (>= 10)
 Section: x11
