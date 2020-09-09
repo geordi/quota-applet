@@ -72,11 +72,8 @@ def get_quota_for_user(username):
     if blocks.endswith('*'):
         blocks = blocks[:-1]
 
-    try:
-        blocks = int(blocks)
-        user_quota = int(user_quota)
-    except Exception:
-        sys.exit()
+    blocks = int(blocks)
+    user_quota = int(user_quota)
 
     return (blocks, user_quota,)
 
