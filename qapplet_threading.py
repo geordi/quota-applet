@@ -16,6 +16,8 @@ from pathlib import Path
 from threading import Thread
 from PIL import Image, ImageDraw
 
+CHECK_INTERVAL = 15
+
 
 def text_to_list(who_str):
     output = []
@@ -150,7 +152,7 @@ class Indicator():
 
     def show_quota(self):
         while True:
-            time.sleep(60)
+            time.sleep(CHECK_INTERVAL)
     
             blocks, user_quota = get_quota_for_user(self.username)
 
