@@ -8,3 +8,8 @@ Displayed info:
 
 ## Dependencies
 - gir1.2-appindicator3-0.1
+
+## Build dependencies
+```
+$ apt install debhelper devscripts lintian
+```
