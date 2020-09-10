@@ -23,7 +23,7 @@ class NoQuotaError(Exception):
     pass
 
 def get_quota_for_user():
-    output = subprocess.check_output(['quota', '-A'], text=True).splitlines()
+    output = os.popen('quota -A').read().splitlines()
 
     if output[0].endswith(': none'):
         raise NoQuota
@@ -49,7 +49,7 @@ def show_notification(blocks, user_quota):
         return
 
     info = [
-        "f{blocks//1000} MB/{user_quota//1000} MB",
+        f"{blocks//1000} MB/{user_quota//1000} MB",
         "Try to close Firefox and delete .mozilla directory or contact your teacher.",
         "Command: rm -r ~/.mozilla",
 
