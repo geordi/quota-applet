@@ -49,7 +49,7 @@ def show_notification(blocks, user_quota):
     del_mozilla = "Command: rm -r ~/.mozilla"
     blocks_m = blocks/1000
     user_quota_m = user_quota/1000
-    info_str = "{1} MB/{2} MB\n".format(blocks_m, user_quota_m)
+    info_str = f"{blocks_m} MB/{user_quota_m} MB\n"
     info_str += help_str
     info_str += del_mozilla
     #print('Disk quota exceeded {}'.format(info_str))
