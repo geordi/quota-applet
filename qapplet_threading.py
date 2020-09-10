@@ -45,14 +45,21 @@ def get_quota_for_user():
 
 
 def show_notification(blocks, user_quota):
-    help_str = "Try to close Firefox and delete .mozilla directory or contact your teacher.\n"
-    del_mozilla = "Command: rm -r ~/.mozilla"
-    blocks_m = blocks/1000
-    user_quota_m = user_quota/1000
-    info_str = f"{blocks_m} MB/{user_quota_m} MB\n"
-    info_str += help_str
-    info_str += del_mozilla
-    #print('Disk quota exceeded {}'.format(info_str))
+    notified_path = os.path.join(WDIR, "notified")
+
+    if os.path.exists(notified_path):
+        return
+
+    info = [
+        "f{blocks//1000} MB/{user_quota//1000} MB",
+        "Try to close Firefox and delete .mozilla directory or contact your teacher.",
+        "Command: rm -r ~/.mozilla",
+
+    ]
+    subprocess.Popen(["notify-send", "-u", "critical", "Disk quota exceeded", "\n".join(info)])
+
+    with open(notified_path, "w") as f:
+        f.write("yes")
 
 
 def quota_info_str(blocks, user_quota):
