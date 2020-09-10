@@ -18,35 +18,22 @@ from threading import Thread
 from PIL import Image, ImageDraw
 
 
-def text_to_list(who_str):
-    output = []
-    line = ''
-    for char in who_str:
-        line += char
-        if char == '\n':
-            output.append(line)
-            line = ''
-    return output
-
 USER = pwd.getpwuid(os.getuid()).pw_name
 WDIR = '/tmp/qapplet_{}/'.format(USER)
 
-def get_quota_for_user(username):
-    po = os.popen('quota ' + username, 'r')
-    quota_str = po.read()
-    #print po
-    #quota_str = '''Disk quotas for user ...
-    # Filesystem  blocks   quota   limit   grace   files   quota   limit   grace
-    #nfs460:/home  106636* 100000  120000    none    1760   10000   15000
-    #'''
+class NoQuotaError(Exception):
+    pass
+
+def get_quota_for_user():
+    output = subprocess.check_output(['quota', '-A'], text=True).splitlines()
+
+    if output[0].endswith(': none'):
+        raise NoQuota
     
-    quota_list = text_to_list(quota_str)[-1]
-    quota_line = quota_list.strip().rstrip()
-    quota_fields = quota_line.split(' ')
+    quota_fields = output[-1].strip().split(' ')
     quota_fields = [ f for f in quota_fields if f != '' ]
-    field_offset = 0
-    blocks = quota_fields[0+field_offset]
-    user_quota = quota_fields[1+field_offset]
+    blocks = quota_fields[0]
+    user_quota = quota_fields[1]
 
     if blocks.endswith('*'):
         blocks = blocks[:-1]
@@ -57,21 +44,21 @@ def get_quota_for_user(username):
     return (blocks, user_quota,)
 
 
-def show_notification(username, blocks, user_quota):
+def show_notification(blocks, user_quota):
     help_str = "Try to close Firefox and delete .mozilla directory or contact your teacher.\n"
     del_mozilla = "Command: rm -r ~/.mozilla"
     blocks_m = blocks/1000
     user_quota_m = user_quota/1000
-    info_str = "{0}: {1} MB/{2} MB\n".format(username, blocks_m, user_quota_m)
+    info_str = "{1} MB/{2} MB\n".format(blocks_m, user_quota_m)
     info_str += help_str
     info_str += del_mozilla
     #print('Disk quota exceeded {}'.format(info_str))
 
 
-def quota_info_str(username, blocks, user_quota):
+def quota_info_str(blocks, user_quota):
     blocks_m = blocks//1000
     user_quota_m = user_quota//1000
-    return 'Quota: {1}/{2} MB'.format(username, blocks_m, user_quota_m)
+    return f'Quota: {blocks_m}/{user_quota_m} MB'
 
 
 def draw_pie(percent, filename='pie.png'):
@@ -101,13 +88,12 @@ def get_icon_filename(percent):
     return icon_filename
 
 
-class Indicator():
+class Indicator:
 
-    def __init__(self, username, check_interval):
-        self.username = username
+    def __init__(self, check_interval):
         self.check_interval = check_interval
         
-        blocks, user_quota = get_quota_for_user(self.username)
+        blocks, user_quota = get_quota_for_user()
         
         self.app = 'quota_applet'
         self.iconpath = get_icon_filename(int(100*blocks/user_quota))
@@ -119,7 +105,7 @@ class Indicator():
         
         #print(blocks/user_quota)
         
-        self.indicator.set_label(quota_info_str(self.username, blocks, user_quota), self.app)
+        self.indicator.set_label(quota_info_str(blocks, user_quota), self.app)
         
         # the thread:
         self.update = Thread(target=self.show_quota)
@@ -154,10 +140,10 @@ class Indicator():
         while True:
             time.sleep(self.check_interval)
     
-            blocks, user_quota = get_quota_for_user(self.username)
+            blocks, user_quota = get_quota_for_user()
 
             if blocks > user_quota:
-                show_notification(self.username, blocks, user_quota)
+                show_notification(blocks, user_quota)
 
             blocks_m = blocks//1000
             user_quota_m = user_quota//1000
@@ -195,9 +181,14 @@ def main():
     parser.add_argument('--check-interval', help='How often check the used disk space', default=15, type=int)
     args = parser.parse_args()
 
+    try:
+        get_quota_for_user()
+    except NoQuotaError:
+        print("No quota for this user, exiting the application")
+        exit(0)
+
     gen_pies()
-    
-    Indicator(USER, **vars(args))
+    Indicator(**vars(args))
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     Gtk.main()
 
