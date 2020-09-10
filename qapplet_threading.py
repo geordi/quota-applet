@@ -11,15 +11,13 @@ import os
 import sys
 import time
 import subprocess
-import pwd
 import argparse
 from pathlib import Path
 from threading import Thread
 from PIL import Image, ImageDraw
 
 
-USER = pwd.getpwuid(os.getuid()).pw_name
-WDIR = '/tmp/qapplet_{}/'.format(USER)
+WDIR = os.path.join(os.getenv('XDG_CACHE_HOME'), 'qapplet')
 
 class NoQuotaError(Exception):
     pass
