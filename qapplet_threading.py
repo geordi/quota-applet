@@ -42,22 +42,6 @@ def get_quota_for_user():
     return (blocks, user_quota,)
 
 
-def show_notification(blocks, user_quota):
-    notified_path = os.path.join(WDIR, "notified")
-
-    if os.path.exists(notified_path):
-        return
-
-    info = [
-        f"{blocks//1000} MB/{user_quota//1000} MB",
-        "Please run Disk Usage Analyzer (baobab) and delete something.",
-    ]
-    subprocess.Popen(["notify-send", "-u", "critical", "Disk quota exceeded", "\n".join(info)])
-
-    with open(notified_path, "w") as f:
-        f.write("yes")
-
-
 def quota_info_str(blocks, user_quota):
     blocks_m = blocks//1000
     user_quota_m = user_quota//1000
@@ -95,6 +79,7 @@ class Indicator:
 
     def __init__(self, check_interval):
         self.check_interval = check_interval
+        self.notified = False
         
         blocks, user_quota = get_quota_for_user()
         
@@ -146,7 +131,7 @@ class Indicator:
             blocks, user_quota = get_quota_for_user()
 
             if blocks > user_quota:
-                show_notification(blocks, user_quota)
+                self.show_notification(blocks, user_quota)
 
             blocks_m = blocks//1000
             user_quota_m = user_quota//1000
@@ -169,6 +154,17 @@ class Indicator:
 
     def stop(self, source):
         Gtk.main_quit()
+
+    def show_notification(self, blocks, user_quota):
+        if self.notified:
+            return
+
+        info = [
+            f"{blocks//1000} MB/{user_quota//1000} MB",
+            "Please run Disk Usage Analyzer (baobab) and delete something.",
+        ]
+        subprocess.Popen(["notify-send", "-u", "critical", "Disk quota exceeded", "\n".join(info)])
+        self.notified = True
 
 
 def gen_pies():
