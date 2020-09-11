@@ -50,9 +50,7 @@ def show_notification(blocks, user_quota):
 
     info = [
         f"{blocks//1000} MB/{user_quota//1000} MB",
-        "Try to close Firefox and delete .mozilla directory or contact your teacher.",
-        "Command: rm -r ~/.mozilla",
-
+        "Please run Disk Usage Analyzer (baobab) and delete something.",
     ]
     subprocess.Popen(["notify-send", "-u", "critical", "Disk quota exceeded", "\n".join(info)])
 
