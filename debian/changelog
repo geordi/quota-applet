@@ -1,3 +1,21 @@
+quota-applet (1.2.0) UNRELEASED; urgency=medium
+
+  * notified is stored as variable, no need for file in temp
+  * Info string
+  * Fixes - use popen so exit_code != 0 doesnt trigger exception
+  * use XDG_CACHE_HOME for temporary files
+  * Show notifications when disk space will be excceeded soon
+  * Fixed string for notification
+  * Check if quota is set for user
+  * Readme: added build dependencies
+  * debian: added missing Source
+  * Use debuild for package building
+  * Updated debian package
+
+
+ -- Daniel Trnka <daniel.trnka@gmail.com>  Wed, 11 Sep 2020 12:22:49 +0000
+
+
 quota-applet (1.1.0) UNRELEASED; urgency=medium
 
   * Fixed another deprecated issues
