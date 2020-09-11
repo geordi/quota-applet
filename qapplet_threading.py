@@ -43,9 +43,7 @@ def get_quota_for_user():
 
 
 def quota_info_str(blocks, user_quota):
-    blocks_m = blocks//1000
-    user_quota_m = user_quota//1000
-    return f'Quota: {blocks_m}/{user_quota_m} MB'
+    return f'Quota: {blocks//1000}/{user_quota//1000} MB'
 
 
 def draw_pie(percent, filename='pie.png'):
@@ -88,10 +86,8 @@ class Indicator:
         self.indicator = AppIndicator3.Indicator.new(
             self.app, self.iconpath,
             AppIndicator3.IndicatorCategory.OTHER)
-        self.indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)       
+        self.indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE) 
         self.indicator.set_menu(self.create_menu())
-        
-        #print(blocks/user_quota)
         
         self.indicator.set_label(quota_info_str(blocks, user_quota), self.app)
         
@@ -129,25 +125,15 @@ class Indicator:
             time.sleep(self.check_interval)
     
             blocks, user_quota = get_quota_for_user()
-
             if blocks > user_quota:
                 self.show_notification(blocks, user_quota)
 
-            blocks_m = blocks//1000
-            user_quota_m = user_quota//1000
-            mention = 'Quota: {}/{} MB'.format(blocks_m, user_quota_m)
-
-            #print(blocks/user_quota, blocks/user_quota)
-            
             percent = int(100*blocks/user_quota)
-            
-            icon_filename = get_icon_filename(percent)
-            
-            self.indicator.set_icon_full(icon_filename, f"{percent}%")
-
+            self.indicator.set_icon_full(get_icon_filename(percent), f"{percent}%")
             GLib.idle_add(
                 self.indicator.set_label,
-                mention, self.app,
+                quota_info_str(blocks, user_quota),
+                self.app,
                 priority=GLib.PRIORITY_DEFAULT
             )
 
