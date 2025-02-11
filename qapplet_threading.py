@@ -17,10 +17,15 @@ from threading import Thread
 from PIL import Image, ImageDraw
 
 
-WDIR = os.path.join(os.getenv('XDG_CACHE_HOME'), 'qapplet')
+APPLET_NAME = 'qapplet'
+HOME_DIR = os.getenv('HOME')
+
+WDIR = os.path.join(os.getenv('XDG_CACHE_HOME'), APPLET_NAME) if os.getenv('XDG_CACHE_HOME') else os.path.join(HOME_DIR, APPLET_NAME)
+
 
 class NoQuotaError(Exception):
     pass
+
 
 def get_quota_for_user():
     output = os.popen('quota -A').read().splitlines()
@@ -94,7 +99,7 @@ class Indicator:
         # the thread:
         self.update = Thread(target=self.show_quota)
         # daemonize the thread to make the indicator stopable
-        self.update.setDaemon(True)
+        self.update.daemon = True
         self.update.start()
 
 
@@ -180,3 +185,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
